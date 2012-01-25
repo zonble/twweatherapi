@@ -112,7 +112,42 @@ def forecast():
 		return getAllData(weather.WeatherForecast, 'forecast_', request, 'fetchWithID', 'locations()', 'id')
 	else:
 		return getSingleData(weather.WeatherForecast, 'forecast_' + location, request, 'fetchWithID', location)
-	
+
+@app.route('/week', methods=['GET'])
+def week():
+	pass
+
+@app.route('/week_travel', methods=['GET'])
+def week_travel():
+	pass
+
+@app.route('/3sea', methods=['GET'])
+def three_day_sea():
+	pass
+
+@app.route('/nearsea', methods=['GET'])
+def nearsea():
+	pass
+
+@app.route('/tide', methods=['GET'])
+def tide():
+	pass
+
+@app.route('/image', methods=['GET'])
+def image():
+	pass
+
+@app.route('/obs', methods=['GET'])
+def obs():
+	pass
+
+@app.route('/global', methods=['GET'])
+def global_forecasts():
+	pass
+
+
+
+
 
 if __name__ == '__main__':
 	port = int(os.environ.get('PORT', 5000))
