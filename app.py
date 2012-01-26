@@ -44,7 +44,8 @@ app.pages = [
 	{'function_name':u'nearsea', 'title':u'近海預報'},
 	{'function_name':u'tide', 'title':u'潮汐預報'},
 	{'function_name':u'obs', 'title':u'觀測站資料'},
-	{'function_name':u'global_forecasts', 'title':u'全球天氣'}
+	{'function_name':u'global_forecasts', 'title':u'全球天氣'},
+	{'function_name':u'image', 'title':u'天氣雲圖'}
 	]
 
 cache = SimpleCache()
@@ -55,7 +56,7 @@ def _output(cachedData, request):
 	if outputtype == 'json':
 		jsonText = json.dumps({"result":cachedData})
 		response = make_response(jsonText)
-		response.headers['Content-Type'] = 'text/plain; charset=utf-8'
+		response.headers['Content-Type'] = 'application/json; charset=utf-8'
 		return response
 	else:
 		pl = dict(result=cachedData)
@@ -82,7 +83,6 @@ def getData(modelInstance, cache_key, request, fetchMethodName='fetchWithID', fe
 def getAllData(model, cache_key_prefix, request, fetchMethodName='fetchWithID', fetchItemsName='locations()', fetchItemKey='id'):
 	cache_key = cache_key_prefix + '_all'
 	cachedData = cache.get(cache_key)
-	cachedData = None
 	modelInstance = model()
 	if cachedData is None:
 		results = []
@@ -193,13 +193,56 @@ def global_forecasts():
 
 @app.route('/image', methods=['GET'])
 def image():
-	pass
+	imageID = str(request.args.get('id', ''))
+	if not len(imageID):
+		text = u'<table>'
+		text += u'<tr><th>代號</th><th colspan="2">圖片</th></tr>'
+		for item in weather.WeatherImageURL:
+			line = u'<tr>' 
+			line += '<td>' + item['id'] + '</td>'
+			line += '<td><a href="' + url_for('image', id=item['id']) + '">Cached Image</a></td>'
+			line += '<td><a href="' + item["URL"] + '">Original Image</a></td>'
+			line += '</tr>'
+			text += line
+		text += '</table>'
+		return render_template('index.html', app=app, text=Markup(text), title=u'天氣雲圖', side=Markup(sidebar()))
+		return None
+
+	URL = None
+	for item in weather.WeatherImageURL:
+		if str(imageID) == str(item['id']):
+			URL = item["URL"]
+	if URL is None:
+		abort(404)
+		return
+
+	should_redirect = request.args.get('redirect', '')
+	if should_redirect is not None:
+		redirect(URL)
+
+	cache_key = 'image_' + imageID
+	cachedData = cache.get(cache_key)
+	if not cachedData:
+		import urllib
+		url = urllib.urlopen(URL, proxies={})
+		imageData = url.read()
+		if imageData is None:
+			return redirect(URL)
+		cachedData = imageData
+		cache.set(cache_key, cachedData, timeout=DEFAULT_CACHE_TIMEOUT)
+	response = make_response(cachedData)
+	response.headers['Content-Type'] = 'image/jpeg'
+	return response
+
 
 def sidebar():
 	text = u'<ul>'
-	text += u'<li>重要天氣警告 <a href="' + url_for('warning') + u'">Plist</a> <a href="' + url_for('warning', output='json') + u'">JSON</a></li>'
+	text += u'<li>重要天氣警告 <a href="' + url_for('warning') + \
+		u'">Plist</a> <a href="' + url_for('warning', output='json') + \
+		u'">JSON</a></li>'
 	for page in app.pages:
-		text += u'<li><a href="' + url_for(page['function_name']) + '">' + page['title'] + u'</a></li>'
+		text += u'<li><a title="' + page['title'] + '" href="' + \
+			url_for(page['function_name']) + '">' + page['title'] + u'</a></li>'
 	text += u'</ul>'
 	return text
 
@@ -207,8 +250,6 @@ def sidebar():
 def hello():
 	text = sidebar()
 	return render_template('index.html', app=app, text=Markup(text))
-
-
 
 if __name__ == '__main__':
 	port = int(os.environ.get('PORT', 5000))

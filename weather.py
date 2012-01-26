@@ -669,36 +669,36 @@ class TestWeatherTide(unittest.TestCase):
 
 WeatherImageURL = [
 
-	{"id": "weather", "URL":"http://www.cwb.gov.tw/V6/forecast/fcst/Data/I04_small.jpg"},
-	{"id": "weather_24", "URL":"http://www.cwb.gov.tw/V6/forecast/fcst/Data/SFC24.jpg"},
+	{"id": "weather", "URL":"http://www.cwb.gov.tw/V7/forecast/fcst/Data/I04_small.jpg"},
+	{"id": "weather_24", "URL":"http://www.cwb.gov.tw/V7/forecast/fcst/Data/SFC24.jpg"},
 
-	{"id": "rain", "URL":"http://www.cwb.gov.tw/V6/observe/rainfall/Data/hk.jpg"},
-	{"id": "rain_12", "URL":"http://www.cwb.gov.tw/V6/forecast/fcst/Data/QPF_ChFcstPrecip12.jpg"},
-	{"id": "rain_24", "URL":"http://www.cwb.gov.tw/V6/forecast/fcst/Data/QPF_ChFcstPrecip24.jpg"},
+	{"id": "rain", "URL":"http://www.cwb.gov.tw/V7/observe/rainfall/Data/hk.jpg"},
+	{"id": "rain_12", "URL":"http://www.cwb.gov.tw/V7/forecast/fcst/Data/QPF_ChFcstPrecip12.jpg"},
+	{"id": "rain_24", "URL":"http://www.cwb.gov.tw/V7/forecast/fcst/Data/QPF_ChFcstPrecip24.jpg"},
 	
-	{"id": "radar", "URL":"http://www.cwb.gov.tw/V6/observe/radar/Data/MOS_1024/MOS.jpg"},
-	{"id": "radar2", "URL":"http://www.cwb.gov.tw/V6/observe/radar/Data/MOS2_1024/MOS2.jpg"},
+	{"id": "radar", "URL":"http://www.cwb.gov.tw/V7/observe/radar/Data/MOS_1024/MOS.jpg"},
+	{"id": "radar2", "URL":"http://www.cwb.gov.tw/V7/observe/radar/Data/MOS2_1024/MOS2.jpg"},
 
-	{"id": "color_taiwan", "URL":"http://www.cwb.gov.tw/V6/observe/satellite/Data/s3p/s3p.jpg"},
-	{"id": "color_asia", "URL":"http://www.cwb.gov.tw/V6/observe/satellite/Data/s1p/s1p.jpg"},
-	{"id": "color_world", "URL":"http://www.cwb.gov.tw/V6/observe/satellite/Data/s0p/s0p.jpg"},
+	{"id": "color_taiwan", "URL":"http://www.cwb.gov.tw/V7/observe/satellite/Data/s3p/s3p.jpg"},
+	{"id": "color_asia", "URL":"http://www.cwb.gov.tw/V7/observe/satellite/Data/s1p/s1p.jpg"},
+	{"id": "color_world", "URL":"http://www.cwb.gov.tw/V7/observe/satellite/Data/s0p/s0p.jpg"},
 
-	{"id": "hilight_taiwan", "URL":"http://www.cwb.gov.tw/V6/observe/satellite/Data/s3q/s3q.jpg"},
-	{"id": "hilight_asia", "URL":"http://www.cwb.gov.tw/V6/observe/satellite/Data/s1q/s1q.jpg"},
-	{"id": "hilight_world", "URL":"http://www.cwb.gov.tw/V6/observe/satellite/Data/s0q/s0q.jpg"},
+	{"id": "hilight_taiwan", "URL":"http://www.cwb.gov.tw/V7/observe/satellite/Data/s3q/s3q.jpg"},
+	{"id": "hilight_asia", "URL":"http://www.cwb.gov.tw/V7/observe/satellite/Data/s1q/s1q.jpg"},
+	{"id": "hilight_world", "URL":"http://www.cwb.gov.tw/V7/observe/satellite/Data/s0q/s0q.jpg"},
 
-	{"id": "bw_taiwan", "URL":"http://www.cwb.gov.tw/V6/observe/satellite/Data/s3o/s3o.jpg"},
-	{"id": "bw_asia", "URL":"http://www.cwb.gov.tw/V6/observe/satellite/Data/s1o/s1o.jpg"},
-	{"id": "bw_world", "URL":"http://www.cwb.gov.tw/V6/observe/satellite/Data/s0o/s0o.jpg"},
+	{"id": "bw_taiwan", "URL":"http://www.cwb.gov.tw/V7/observe/satellite/Data/s3o/s3o.jpg"},
+	{"id": "bw_asia", "URL":"http://www.cwb.gov.tw/V7/observe/satellite/Data/s1o/s1o.jpg"},
+	{"id": "bw_world", "URL":"http://www.cwb.gov.tw/V7/observe/satellite/Data/s0o/s0o.jpg"},
 
-	{"id": "light_taiwan", "URL":"http://www.cwb.gov.tw/V6/observe/satellite/Data/sbo/sbo.jpg"},
-	{"id": "light_asia", "URL":"http://www.cwb.gov.tw/V6/observe/satellite/Data/sao/sao.jpg"},
-	{"id": "light_world", "URL":"http://www.cwb.gov.tw/V6/observe/satellite/Data/sco/sco.jpg"},
+	{"id": "light_taiwan", "URL":"http://www.cwb.gov.tw/V7/observe/satellite/Data/sbo/sbo.jpg"},
+	{"id": "light_asia", "URL":"http://www.cwb.gov.tw/V7/observe/satellite/Data/sao/sao.jpg"},
+	{"id": "light_world", "URL":"http://www.cwb.gov.tw/V7/observe/satellite/Data/sco/sco.jpg"},
 
-	{"id": "wave", "URL":"http://www.cwb.gov.tw/V6/forecast/fcst/Data/I12_small.jpg"},
-	{"id": "wave_24", "URL":"http://www.cwb.gov.tw/V6/forecast/fcst/Data/WFC24.jpg"},
-	{"id": "wave_36", "URL":"http://www.cwb.gov.tw/V6/forecast/fcst/Data/WFC36.jpg"},
-	{"id": "wave_48", "URL":"http://www.cwb.gov.tw/V6/forecast/fcst/Data/WFC48.jpg"},
+	{"id": "wave", "URL":"http://www.cwb.gov.tw/V7/forecast/fcst/Data/I12_small.jpg"},
+	{"id": "wave_24", "URL":"http://www.cwb.gov.tw/V7/forecast/fcst/Data/WFC24.jpg"},
+	{"id": "wave_36", "URL":"http://www.cwb.gov.tw/V7/forecast/fcst/Data/WFC36.jpg"},
+	{"id": "wave_48", "URL":"http://www.cwb.gov.tw/V7/forecast/fcst/Data/WFC48.jpg"},
 ]
 
 WeatherOBSLocations = [
