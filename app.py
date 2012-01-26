@@ -194,13 +194,28 @@ def getIndexPage(model, function_name, request, fetchItemsName='locations()'):
 		cache.set(cache_title_key, cachedTitle, timeout=DEFAULT_CACHE_TIMEOUT)
 	return render_template('index.html', app=app, text=Markup(cachedData), title=cachedTitle, side=Markup(sidebar()))
 
-@app.route('/testevn', methods=['GET'])
-def test():
-	return str(os.environ)
+# @app.route('/testevn', methods=['GET'])
+# def test():
+# 	return str(os.environ)
 
 @app.route('/testquery', methods=['GET'])
 def testQuery():
-	return str(Device.query.all())
+	devices = Device.query.all()
+	text = u'<table>'
+	for current_device in devices:
+		line = u'<tr>'
+		line += '<td>' + current_device.device_id + '</td>'
+		line += '<td>' + current_device.device_name + '</td>'
+		line += '<td>' + current_device.device_model + '</td>'
+		line += '<td>' + current_device.app_name + '</td>'
+		line += '<td>' + current_device.app_version + '</td>'
+		line += '<td>' + current_device.os_name + '</td>'
+		line += '<td>' + current_device.os_version + '</td>'
+		line += '<td>' + current_device.note + '</td>'
+		line += u'</tr>'
+		text += line
+	text += '</table>'
+	return render_template('index.html', app=app, text=Markup(text), side=Markup(sidebar()))
 
 @app.route('/warning', methods=['GET'])
 def warning():
