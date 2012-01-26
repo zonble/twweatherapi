@@ -67,6 +67,16 @@ class Device(db.Model):
 	os_version = db.Column(db.String(40))
 	access_date = db.Column(db.DateTime)
 	note = db.Column(db.String(255))
+	def __init__(self):
+		self.device_id = ""
+		self.device_name = ""
+		self.device_model = ""
+		self.app_name = ""
+		self.app_version = ""
+		self.os_name = ""
+		self.os_version = ""
+		self.note = ""
+		self.access_date = datetime.now()
 
 def add_record(request):
 	device_id = request.args.get('device_id', '')
