@@ -186,7 +186,9 @@ def getIndexPage(model, function_name, request, fetchItemsName='locations()'):
 
 @app.route('/test', methods=['GET'])
 def test():
-	return str(Device.query)
+	return str(os.environ)
+
+	return str(Device.query.all())
 
 @app.route('/warning', methods=['GET'])
 def warning():
