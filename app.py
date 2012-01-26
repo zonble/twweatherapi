@@ -32,9 +32,12 @@ import weather
 import plistlib, json
 from flask import *
 from werkzeug.contrib.cache import SimpleCache
+from flaskext.sqlalchemy import SQLAlchemy
+from datetime import datetime
 
 app = Flask(__name__)
 app.name = u"台灣天氣 API Server"
+app.config.from_pyfile(os.path.join(app.root_path, 'config.py'))
 app.pages = [
 	{'function_name':u'overview', 'title':u'關心天氣'},
 	{'function_name':u'forecast', 'title':u'48 小時天氣預報'},
@@ -47,9 +50,53 @@ app.pages = [
 	{'function_name':u'global_forecasts', 'title':u'全球天氣'},
 	{'function_name':u'image', 'title':u'天氣雲圖'}
 	]
+db = SQLAlchemy(app)
+db_session = db.session
 
 cache = SimpleCache()
 DEFAULT_CACHE_TIMEOUT = 30 * 60
+
+class Device(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	device_id = db.Column(db.String(255), unique=True, nullable=False)
+	device_name = db.Column(db.String(255))
+	device_model = db.Column(db.String(40))
+	app_name = db.Column(db.String(40))
+	app_version = db.Column(db.String(40))
+	os_name = db.Column(db.String(40))
+	os_version = db.Column(db.String(40))
+	access_date = db.Column(db.DateTime)
+	note = db.Column(db.String(255))
+
+def add_record(request):
+	device_id = request.args.get('device_id', '')
+	if not len(str(device_id)):
+		return
+	
+	current_device = Device.query.filter_by(device_id=device_id).first()
+	app.logger.debug(current_device)
+	if not current_device:
+		current_device = Device()
+		current_device.device_id = device_id
+		db_session.add(current_device)
+
+	device_name = request.args.get('device_name', '')
+	current_device.device_name = device_name if device_name else ""
+	device_model = request.args.get('device_model', '')
+	current_device.device_model = device_model if device_name else ""
+	app_name = request.args.get('app_name', '')
+	current_device.app_name = app_name if app_name else ""
+	app_version = request.args.get('app_version', '')
+	current_device.app_version = app_version if app_version else ""
+	os_name = request.args.get('os_name', '')
+	current_device.os_name = os_name if os_name else ""
+	os_version = request.args.get('os_version', '')
+	current_device.os_version = os_version if os_version else ""
+	note = request.args.get('note', '')
+	current_device.note = note if note else ""
+	current_device.access_date = datetime.now()
+
+	db_session.commit()
 
 def _output(cachedData, request):
 	outputtype = request.args.get('output', '')
@@ -133,6 +180,10 @@ def getIndexPage(model, function_name, request, fetchItemsName='locations()'):
 		cache.set(cache_title_key, cachedTitle, timeout=DEFAULT_CACHE_TIMEOUT)
 	return render_template('index.html', app=app, text=Markup(cachedData), title=cachedTitle, side=Markup(sidebar()))
 
+@app.route('/test', methods=['GET'])
+def test():
+	return str(Device.query)
+
 @app.route('/warning', methods=['GET'])
 def warning():
 	return getSingleData(weather.WeatherWarning, 'warnings', request, 'fetch')
@@ -148,10 +199,9 @@ def overview():
 	return text
 
 def handleRequest(model, function_name, request):
+	add_record(request)
 	location = request.args.get('location', '')
 	cache_key_prefix = function_name + '_'
-	# app.logger.debug(location)
-	
 	if location == 'all' or location is u'all':
 		return getAllData(model, cache_key_prefix, request)
 	elif not len(location):
@@ -253,4 +303,4 @@ def hello():
 
 if __name__ == '__main__':
 	port = int(os.environ.get('PORT', 5000))
-	app.run(host='0.0.0.0', port=port, debug=True)
+	app.run(host='0.0.0.0', port=port)
