@@ -26,6 +26,7 @@ a:hover {
 	font-size: 10pt;
 	padding: 10px 0;
 	text-align: center;
+	clear: both;
 }
 
 #header {
@@ -65,4 +66,23 @@ td.data_link {
 	width: 50px;
 	min-width: 50px;
 	text-align: center;
+}
+
+#text {
+	width: 600px;
+	float: left;
+}
+
+.side {
+	width: 150px;
+	font-size: 10pt;
+	position: relative;
+	float: right;
+	padding: 5px 10px 30px 10px;
+	border-left: 2px dotted #CCC;
+}
+
+.side ul {
+	list-style: none;
+	padding: 0;
 }

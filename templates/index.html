@@ -2,17 +2,25 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>{{app.name}}</title>
+    <title>{{app.name}}{%if title %} » {{title}} {% endif %}</title>
     <link href="static/screen.css" media="screen" rel="stylesheet" />
+    <meta property="og:title" content="{{app.name}}{%if title %} » {{title}} {% endif %}" /> 
   </head>
   <body>
   <h1 id="header"><a href="/" title="{{app.name}}">{{app.name}}</a></h1>
   <div id="main">
+  <div id="text">
   {% if text %}
   {{ text }}
   {% endif %}
   <p>資料來源：中央氣象局</p>
-  <p id="credit">2011 Created by Weizhong Yang (a.k.a zonble)</p>
   </div>
+  {% if side %}
+  <div class="side">
+  {{ side }}
+  </div>
+  {% endif %}
+  </div>
+  <p id="credit">2011 Created by Weizhong Yang (a.k.a zonble)</p>
   </body>
 </html>

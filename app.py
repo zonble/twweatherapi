@@ -82,6 +82,7 @@ def getData(modelInstance, cache_key, request, fetchMethodName='fetchWithID', fe
 def getAllData(model, cache_key_prefix, request, fetchMethodName='fetchWithID', fetchItemsName='locations()', fetchItemKey='id'):
 	cache_key = cache_key_prefix + '_all'
 	cachedData = cache.get(cache_key)
+	cachedData = None
 	modelInstance = model()
 	if cachedData is None:
 		results = []
@@ -89,7 +90,7 @@ def getAllData(model, cache_key_prefix, request, fetchMethodName='fetchWithID', 
 		for item in items:
 			item_id = item[fetchItemKey]
 			item_cache_key = cache_key_prefix + '_' + str(item_id)
-			result = getData(modelInstance, item_cache_key, request, fetchMethodName, item_id)
+			result = getData(modelInstance, item_cache_key, request, fetchMethodName, str(item_id))
 			results.append(result)
 		if len(results):
 			cachedData = results
@@ -102,7 +103,9 @@ def getSingleData(model, cache_key, request, fetchMethodName='fetchWithID', fetc
 
 def getIndexPage(model, function_name, request, fetchItemsName='locations()'):
 	cache_key = function_name + '_page'
+	cache_title_key = function_name + '_title'
 	cachedData = cache.get(cache_key)
+	cachedTitle = cache.get(cache_title_key)
 	if cachedData is None:
 		title = ""
 		for page in app.pages:
@@ -111,20 +114,24 @@ def getIndexPage(model, function_name, request, fetchItemsName='locations()'):
 				break
 
 		modelInstance = model()
-		items = eval('modelInstance.' + fetchItemsName)
+		result = eval('modelInstance.' + fetchItemsName)
+		items = [{'location':u'全部地點', 'id':'all'}]
+		items.extend(result)
 		text = u'<h2>' + title + u'</h2>'
-		text += u'<table>'
+		text += u'<table>\n'
 		text += u'<tr><th>地點</th><th colspan="2">輸出格式</th></tr>'
 		for item in items:
 			text += '<tr>'
 			text += '<td>' + item['location'] + '</td>'
 			text += u'<td class="data_link"><a title="以 Plist 格式輸出" href="' + url_for(function_name, location=item['id']) + '">Plist</a></td>'
 			text += u'<td class="data_link"><a title="以 JSON 格式輸出" href="' + url_for(function_name, location=item['id'], output='json') + '">JSON</a></td>'
-			text += '</tr>'
-		text += '</table>'
+			text += '</tr>\n'
+		text += '</table>\n'
 		cachedData = text
-		# cache.set(cache_key, cachedData, timeout=DEFAULT_CACHE_TIMEOUT)
-	return render_template('index.html', app=app, text=Markup(cachedData))
+		cachedTitle = title
+		cache.set(cache_key, cachedData, timeout=DEFAULT_CACHE_TIMEOUT)
+		cache.set(cache_title_key, cachedTitle, timeout=DEFAULT_CACHE_TIMEOUT)
+	return render_template('index.html', app=app, text=Markup(cachedData), title=cachedTitle, side=Markup(sidebar()))
 
 @app.route('/warning', methods=['GET'])
 def warning():
@@ -143,10 +150,12 @@ def overview():
 def handleRequest(model, function_name, request):
 	location = request.args.get('location', '')
 	cache_key_prefix = function_name + '_'
-	if not len(location):
-		return getIndexPage(model, function_name, request)
-	elif location == 'all':
+	# app.logger.debug(location)
+	
+	if location == 'all' or location is u'all':
 		return getAllData(model, cache_key_prefix, request)
+	elif not len(location):
+		return getIndexPage(model, function_name, request)
 	else:
 		return getSingleData(model, cache_key_prefix + location, request, 'fetchWithID', location)
 
@@ -186,15 +195,17 @@ def global_forecasts():
 def image():
 	pass
 
-
-@app.route('/')
-def hello():
+def sidebar():
 	text = u'<ul>'
 	text += u'<li>重要天氣警告 <a href="' + url_for('warning') + u'">Plist</a> <a href="' + url_for('warning', output='json') + u'">JSON</a></li>'
 	for page in app.pages:
-		app.logger.debug(page)
 		text += u'<li><a href="' + url_for(page['function_name']) + '">' + page['title'] + u'</a></li>'
 	text += u'</ul>'
+	return text
+
+@app.route('/')
+def hello():
+	text = sidebar()
 	return render_template('index.html', app=app, text=Markup(text))
 
 
