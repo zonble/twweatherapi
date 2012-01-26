@@ -30,15 +30,25 @@ OTHER DEALINGS IN THE SOFTWARE.
 import os
 import weather
 import plistlib, json
-from flask import Flask, request, make_response, Markup
+from flask import *
 from werkzeug.contrib.cache import SimpleCache
 
 app = Flask(__name__)
-cache = SimpleCache()
+app.name = u"台灣天氣 API Server"
+app.pages = [
+	{'function_name':u'overview', 'title':u'關心天氣'},
+	{'function_name':u'forecast', 'title':u'48 小時天氣預報'},
+	{'function_name':u'week', 'title':u'一週天氣'},
+	{'function_name':u'week_travel', 'title':u'一週旅遊'},
+	{'function_name':u'three_day_sea', 'title':u'三天海上預報'},
+	{'function_name':u'nearsea', 'title':u'近海預報'},
+	{'function_name':u'tide', 'title':u'潮汐預報'},
+	{'function_name':u'obs', 'title':u'觀測站資料'},
+	{'function_name':u'global_forecasts', 'title':u'全球天氣'}
+	]
 
-@app.route('/')
-def hello():
-	return 'Hello World!'
+cache = SimpleCache()
+DEFAULT_CACHE_TIMEOUT = 30 * 60
 
 def _output(cachedData, request):
 	outputtype = request.args.get('output', '')
@@ -54,20 +64,22 @@ def _output(cachedData, request):
 		response.headers['Content-Type'] = 'text/plist; charset=utf-8'
 		return response
 
-def getData(modelInstance, cache_key, request, fetchMethodName='fetch', fetchParameter=''):
+def getData(modelInstance, cache_key, request, fetchMethodName='fetchWithID', fetchParameter=None):
 	cachedData = cache.get(cache_key)
 	if cachedData is None:
-		cmd = 'modelInstance.%(methodName)s(%(fetchParameter)s)' %  {'methodName': fetchMethodName, 'fetchParameter': fetchParameter}
-		app.logger.debug(cmd)
+		if fetchParameter is None:
+			cmd = 'modelInstance.%(methodName)s()' %  {'methodName': fetchMethodName}
+		else:
+			cmd = 'modelInstance.%(methodName)s("%(fetchParameter)s")' %  {'methodName': fetchMethodName, 'fetchParameter': fetchParameter}
 		result = eval(cmd)
 		if result is not None:
 			cachedData = result
-			cache.set(cache_key, cachedData, timeout=60 * 60)
+			cache.set(cache_key, cachedData, timeout=DEFAULT_CACHE_TIMEOUT)
 	if cachedData is None:
 		return ""
 	return cachedData
 
-def getAllData(model, cache_key_prefix, request, fetchMethodName='fetch', fetchItemsName='', fetchItemKey='id'):
+def getAllData(model, cache_key_prefix, request, fetchMethodName='fetchWithID', fetchItemsName='locations()', fetchItemKey='id'):
 	cache_key = cache_key_prefix + '_all'
 	cachedData = cache.get(cache_key)
 	modelInstance = model()
@@ -81,71 +93,109 @@ def getAllData(model, cache_key_prefix, request, fetchMethodName='fetch', fetchI
 			results.append(result)
 		if len(results):
 			cachedData = results
-			cache.set(cache_key, cachedData, timeout=60 * 60)
+			cache.set(cache_key, cachedData, timeout=DEFAULT_CACHE_TIMEOUT)
 	return _output(cachedData, request)
 
-def getSingleData(model, cache_key, request, fetchMethodName='fetch', fetchParameter=''):
+def getSingleData(model, cache_key, request, fetchMethodName='fetchWithID', fetchParameter=None):
 	cachedData = getData(model(), cache_key, request, fetchMethodName, fetchParameter)
 	return _output(cachedData, request)
 
+def getIndexPage(model, function_name, request, fetchItemsName='locations()'):
+	cache_key = function_name + '_page'
+	cachedData = cache.get(cache_key)
+	if cachedData is None:
+		title = ""
+		for page in app.pages:
+			if page['function_name'] == function_name:
+				title = page['title']
+				break
+
+		modelInstance = model()
+		items = eval('modelInstance.' + fetchItemsName)
+		text = u'<h2>' + title + u'</h2>'
+		text += u'<table>'
+		text += u'<tr><th>地點</th><th colspan="2">輸出格式</th></tr>'
+		for item in items:
+			text += '<tr>'
+			text += '<td>' + item['location'] + '</td>'
+			text += u'<td class="data_link"><a title="以 Plist 格式輸出" href="' + url_for(function_name, location=item['id']) + '">Plist</a></td>'
+			text += u'<td class="data_link"><a title="以 JSON 格式輸出" href="' + url_for(function_name, location=item['id'], output='json') + '">JSON</a></td>'
+			text += '</tr>'
+		text += '</table>'
+		cachedData = text
+		# cache.set(cache_key, cachedData, timeout=DEFAULT_CACHE_TIMEOUT)
+	return render_template('index.html', app=app, text=Markup(cachedData))
+
 @app.route('/warning', methods=['GET'])
 def warning():
-	print request
-	return getSingleData(weather.WeatherWarning, 'warnings', request)
+	return getSingleData(weather.WeatherWarning, 'warnings', request, 'fetch')
 
 @app.route('/overview', methods=['GET'])
-def overviow():
+def overview():
 	text = cache.get('overview')
 	if text is None:
 		overview = weather.WeatherOverview()
 		overview.fetch()
 		text = overview.plain
-		cache.set('overview', text, timeout=60 * 60)
+		cache.set('overview', text, timeout=DEFAULT_CACHE_TIMEOUT)
 	return text
+
+def handleRequest(model, function_name, request):
+	location = request.args.get('location', '')
+	cache_key_prefix = function_name + '_'
+	if not len(location):
+		return getIndexPage(model, function_name, request)
+	elif location == 'all':
+		return getAllData(model, cache_key_prefix, request)
+	else:
+		return getSingleData(model, cache_key_prefix + location, request, 'fetchWithID', location)
 
 @app.route('/forecast', methods=['GET'])
 def forecast():
-	location = request.args.get('location', '')
-	if not len(location):
-		return None
-	elif location == 'all':
-		return getAllData(weather.WeatherForecast, 'forecast_', request, 'fetchWithID', 'locations()', 'id')
-	else:
-		return getSingleData(weather.WeatherForecast, 'forecast_' + location, request, 'fetchWithID', location)
+	return handleRequest(weather.WeatherForecast, 'forecast', request)
 
 @app.route('/week', methods=['GET'])
 def week():
-	pass
+	return handleRequest(weather.WeatherWeek, 'week', request)
 
 @app.route('/week_travel', methods=['GET'])
 def week_travel():
-	pass
+	return handleRequest(weather.WeatherWeekTravel, 'week_travel', request)
 
 @app.route('/3sea', methods=['GET'])
 def three_day_sea():
-	pass
+	return handleRequest(weather.Weather3DaySea, 'three_day_sea', request)
 
 @app.route('/nearsea', methods=['GET'])
 def nearsea():
-	pass
+	return handleRequest(weather.WeatherNearSea, 'nearsea', request)
 
 @app.route('/tide', methods=['GET'])
 def tide():
-	pass
+	return handleRequest(weather.WeatherTide, 'tide', request)
+
+@app.route('/obs', methods=['GET'])
+def obs():
+	return handleRequest(weather.WeatherOBS, 'obs', request)
+
+@app.route('/global', methods=['GET'])
+def global_forecasts():
+	return handleRequest(weather.WeatherGlobal, 'global_forecasts', request)
 
 @app.route('/image', methods=['GET'])
 def image():
 	pass
 
-@app.route('/obs', methods=['GET'])
-def obs():
-	pass
 
-@app.route('/global', methods=['GET'])
-def global_forecasts():
-	pass
-
-
+@app.route('/')
+def hello():
+	text = u'<ul>'
+	text += u'<li>重要天氣警告 <a href="' + url_for('warning') + u'">Plist</a> <a href="' + url_for('warning', output='json') + u'">JSON</a></li>'
+	for page in app.pages:
+		app.logger.debug(page)
+		text += u'<li><a href="' + url_for(page['function_name']) + '">' + page['title'] + u'</a></li>'
+	text += u'</ul>'
+	return render_template('index.html', app=app, text=Markup(text))
 
 
 
