@@ -184,10 +184,12 @@ def getIndexPage(model, function_name, request, fetchItemsName='locations()'):
 		cache.set(cache_title_key, cachedTitle, timeout=DEFAULT_CACHE_TIMEOUT)
 	return render_template('index.html', app=app, text=Markup(cachedData), title=cachedTitle, side=Markup(sidebar()))
 
-@app.route('/test', methods=['GET'])
+@app.route('/testevn', methods=['GET'])
 def test():
 	return str(os.environ)
 
+@app.route('/testquery', methods=['GET'])
+def testQuery():
 	return str(Device.query.all())
 
 @app.route('/warning', methods=['GET'])
