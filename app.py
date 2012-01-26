@@ -73,7 +73,11 @@ def add_record(request):
 	if not len(str(device_id)):
 		return
 	
-	current_device = Device.query.filter_by(device_id=device_id).first()
+	current_device = None
+	try:
+		current_device = Device.query.filter_by(device_id=device_id).first()
+	except:
+		pass
 	app.logger.debug(current_device)
 	if not current_device:
 		current_device = Device()
