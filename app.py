@@ -37,7 +37,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 app.name = u"台灣天氣 API Server"
-app.config.from_pyfile(os.path.join(app.root_path, 'config.py'))
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 app.pages = [
 	{'function_name':u'overview', 'title':u'關心天氣'},
 	{'function_name':u'forecast', 'title':u'48 小時天氣預報'},
