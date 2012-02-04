@@ -155,7 +155,7 @@ WeatherForecastLocations = [
 	{"location": u"雲林",  "id": 11, "weekLocation":"Center"},
 	{"location": u"嘉義",  "id": 12, "weekLocation":"Center"},
 	{"location": u"台南",  "id": 13, "weekLocation":"South"},
-	{"location": u"高雄",  "id": 14, "weekLocation":"South"},
+	# {"location": u"高雄",  "id": 14, "weekLocation":"South"},
 	{"location": u"屏東",  "id": 15, "weekLocation":"South"},
 	{"location": u"恆春",  "id": 16, "weekLocation":"South"},
 	{"location": u"宜蘭",  "id": 17, "weekLocation":"North-East"},
