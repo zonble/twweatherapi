@@ -33,6 +33,7 @@ import plistlib, json
 from flask import *
 from werkzeug.contrib.cache import SimpleCache
 from flaskext.sqlalchemy import SQLAlchemy
+from sqlalchemy import *
 from datetime import datetime
 
 app = Flask(__name__)
@@ -200,21 +201,30 @@ def getIndexPage(model, function_name, request, fetchItemsName='locations()'):
 
 @app.route('/testquery', methods=['GET'])
 def testQuery():
-	devices = Device.query.all()
+	# devices = Device.query.all()
+	devices = Device.query.distinct(Device.device_model).all()
+
 	text = u'<table>'
 	for current_device in devices:
 		line = u'<tr>'
-		line += '<td>' + current_device.device_id + '</td>'
-		line += '<td>' + current_device.device_name + '</td>'
-		line += '<td>' + current_device.device_model + '</td>'
-		line += '<td>' + current_device.app_name + '</td>'
-		line += '<td>' + current_device.app_version + '</td>'
-		line += '<td>' + current_device.os_name + '</td>'
-		line += '<td>' + current_device.os_version + '</td>'
-		line += '<td>' + current_device.note + '</td>'
+		line += '<td>' + unicode(devices) + '</td>'
 		line += u'</tr>'
-		text += line
 	text += '</table>'
+
+	# text = u'<table>'
+	# for current_device in devices:
+	# 	line = u'<tr>'
+	# 	line += '<td>' + current_device.device_id + '</td>'
+	# 	line += '<td>' + current_device.device_name + '</td>'
+	# 	line += '<td>' + current_device.device_model + '</td>'
+	# 	line += '<td>' + current_device.app_name + '</td>'
+	# 	line += '<td>' + current_device.app_version + '</td>'
+	# 	line += '<td>' + current_device.os_name + '</td>'
+	# 	line += '<td>' + current_device.os_version + '</td>'
+	# 	line += '<td>' + current_device.note + '</td>'
+	# 	line += u'</tr>'
+	# 	text += line
+	# text += '</table>'
 	return render_template('index.html', app=app, text=Markup(text), side=Markup(sidebar()))
 
 @app.route('/warning', methods=['GET'])
