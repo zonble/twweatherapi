@@ -97,8 +97,6 @@ class TestWeatherWarning(unittest.TestCase):
 		self.warnings = WeatherWarning()
 	def testWarning(self):
 		result = self.warnings.fetch()
-		# It is ok to fail here, since there might not be always
-		# warnings.
 		self.assertTrue(result)
 
 class WeatherOverview(object):
@@ -264,6 +262,19 @@ WeatherWeekLocations = [
 	{"location": u"金門",  "id": "Kinmen"},
 	{"location": u"馬祖",  "id": "Matsu"},
 	]
+	
+WeatherWeekMap = {
+	"Taipei":"city_01",
+	"North":"city_04",
+	"Center":"city_08",
+	"South":"city_13",
+	"North-East":"city_17",
+	"East":"city_18",
+	"South-East":"city_19",
+	"Penghu":"city_20",
+	"Kinmen":"city_21",
+	"Matsu":"city_22"
+}
 
 class WeatherWeek(Forecast):
 	def locations(self):
@@ -288,17 +299,23 @@ class WeatherWeek(Forecast):
 				mainLine = line
 				break
 
-		lines = mainLine.split('</p><p> ')
+		lines = mainLine.split('</p><p>')
 		firstLine = lines[0].strip()
 		year = datetime.now().year
-		publishTime = datetime(year, int(firstLine[24:26]), int(firstLine[27:29]), int(firstLine[30:32]), int(firstLine[33:35])).__str__()
+		publishTime = datetime(year, int(firstLine[18:20]), int(firstLine[21:23]), int(firstLine[24:26]), int(firstLine[27:29])).__str__()
 
-		for line in lines[1:]:
-			line = line.strip()
-			parts = line.split('<br />')
-			time = date(year, int(parts[0][0:2]), int(parts[0][3:5])).__str__()
-			description = parts[0][11:].decode("utf-8")
-			temperature = parts[1].replace('</p>', '')
+		for line in lines[2:]:
+			# line = line.strip()
+			# print line
+			# parts = line.split('<br />')
+			# time = date(year, int(parts[0][0:2]), int(parts[0][3:5])).__str__()
+			# description = parts[0][11:].decode("utf-8")
+			# temperature = parts[1].replace('</p>', '')
+			q = '(\d+)/(\d+).*<br />(.*)  (.*)'
+			r = re.findall(q, line)[0]
+			time = date(year, int(r[0]), int(r[1])).__str__()
+			description = r[3].replace('</p>', '').decode("utf-8")
+			temperature = r[2]
 			item = {"date": time, "description": description, "temperature": temperature}
 			items.append(item)
 		result = {"locationName":locationName, "id":name, "publishTime": publishTime, "items": items}
@@ -307,7 +324,7 @@ class WeatherWeek(Forecast):
 		locationName = self.locationNameWithID(name)
 		if locationName is None:
 			return None
-		URLString = WeatherWeekURL % {"location": name}
+		URLString = WeatherWeekURL % {"location": WeatherWeekMap[name]}
 		return self.handleLines(URLString, locationName, name)
 
 
@@ -1065,15 +1082,13 @@ class TestWeatherGlobal(unittest.TestCase):
 			self.assertTrue(result)
 			self.assertTrue(result["locationName"])
 			self.assertTrue(result["id"])
-			# self.assertTrue(result["forecastDate"])
-			# self.assertTrue(result["validDate"])
 			self.assertTrue(result["forecast"])
 			self.assertTrue(result["temperature"])
 
 
 def main():
-	unittest.main()
-
+	print WeatherWeek().fetchWithID('Taipei')
+	# unittest.main()
 
 if __name__ == '__main__':
 	main()
