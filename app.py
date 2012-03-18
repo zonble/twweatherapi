@@ -224,8 +224,8 @@ def testQuery():
 	# text += '</table>'
 	return render_template('index.html', app=app, text=Markup(text), side=Markup(sidebar()))
 
-@app.route('/warning', methods=['GET'])
-def warning():
+@app.route('/warning<misc>', methods=['GET'])
+def warning(misc):
 	return getSingleData(weather.WeatherWarning, 'warnings', request, 'fetch')
 
 @app.route('/overview', methods=['GET'])
