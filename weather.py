@@ -80,9 +80,7 @@ class WeatherWarning(object):
 			for line in lines:
 				if line.find("<") == -1:
 					line = line.rstrip()
-					line = line.replace("  ", "")
-					line = line.replace("　", "")
-					line = line.replace(" ", "")
+					line = line.replace("  ", "").replace("　", "").replace(" ", "")
 					if line.find("：") > -1:
 						text = text + line + "\n"
 					elif len(line) == 0:
@@ -119,7 +117,6 @@ class TestWeatherOverview(unittest.TestCase):
 		self.overview = WeatherOverview()
 	def testOverview(self):
 		self.overview.fetch()
-		# self.assertNotEqual(len(self.overview.html), 0)
 		self.assertNotEqual(len(self.overview.plain), 0)
 
 class Forecast(object):
@@ -164,9 +161,34 @@ WeatherForecastLocations = [
 	{"location": u"馬祖",  "id": 22, "weekLocation":"Matsu"}
 	]
 
+WeatherForecastLocations2 = [
+	{"location": u"台北市", "id": 1 , "weekLocation":"Taipei"},
+	{"location": u"高雄市", "id": 2 , "weekLocation":"South"},
+	{"location": u"基隆市",  "id": 3 , "weekLocation":"North-East"},
+	{"location": u"新北市",  "id": 4 , "weekLocation":"North"},
+	{"location": u"桃園縣",  "id": 5 , "weekLocation":"North"},
+	{"location": u"新竹市",  "id": 14, "weekLocation":"South"},
+	{"location": u"新竹縣",  "id": 6 , "weekLocation":"North"},
+	{"location": u"苗栗縣",  "id": 7 , "weekLocation":"North"},
+	{"location": u"台中市",  "id": 8 , "weekLocation":"Center"},
+	{"location": u"彰化縣",  "id": 9 , "weekLocation":"Center"},
+	{"location": u"南投縣",  "id": 10, "weekLocation":"Center"},
+	{"location": u"雲林縣",  "id": 11, "weekLocation":"Center"},
+	{"location": u"嘉義市",  "id": 16, "weekLocation":"South"},
+	{"location": u"嘉義縣",  "id": 12, "weekLocation":"Center"},
+	{"location": u"台南市",  "id": 13, "weekLocation":"South"},
+	{"location": u"屏東縣",  "id": 15, "weekLocation":"South"},
+	{"location": u"宜蘭縣",  "id": 17, "weekLocation":"North-East"},
+	{"location": u"花蓮縣",  "id": 18, "weekLocation":"South-East"},
+	{"location": u"台東縣",  "id": 19, "weekLocation":"South-East"},
+	{"location": u"澎湖縣",  "id": 20, "weekLocation":"Penghu"},
+	{"location": u"金門縣",  "id": 21, "weekLocation":"Kinmen"},
+	{"location": u"連江縣",  "id": 22, "weekLocation":"Matsu"}
+	]
+
 class WeatherForecast(Forecast):
 	def locations(self):
-		return WeatherForecastLocations
+		return WeatherForecastLocations2
 	def fetchWithID(self, id):
 		locationItem = self.locationItemWithID(id)
 		if locationItem is None:
@@ -175,10 +197,8 @@ class WeatherForecast(Forecast):
 		weekLocation = locationItem['weekLocation']
 
 		URLString = WeatherForecastURL % {"#": int(id)}
-		try:
-			url = urllib.urlopen(URLString, proxies={})
-		except:
-			return None
+		try: url = urllib.urlopen(URLString, proxies={})
+		except: return None
 
 		lines = url.readlines()
 		items = []
@@ -305,12 +325,6 @@ class WeatherWeek(Forecast):
 		publishTime = datetime(year, int(firstLine[18:20]), int(firstLine[21:23]), int(firstLine[24:26]), int(firstLine[27:29])).__str__()
 
 		for line in lines[2:]:
-			# line = line.strip()
-			# print line
-			# parts = line.split('<br />')
-			# time = date(year, int(parts[0][0:2]), int(parts[0][3:5])).__str__()
-			# description = parts[0][11:].decode("utf-8")
-			# temperature = parts[1].replace('</p>', '')
 			q = '(\d+)/(\d+).*<br />(.*)  (.*)'
 			r = re.findall(q, line)[0]
 			time = date(year, int(r[0]), int(r[1])).__str__()
@@ -327,6 +341,47 @@ class WeatherWeek(Forecast):
 		URLString = WeatherWeekURL % {"location": WeatherWeekMap[name]}
 		return self.handleLines(URLString, locationName, name)
 
+
+class WeatherWeek2(Forecast):
+	def locations(self):
+		return WeatherForecastLocations2
+	def handleLines(self, URLString, locationName, name):
+		print  URLString
+		try: url = urllib.urlopen(URLString, proxies={})
+		except: return None
+		lines = url.readlines()
+		publishTime = ""; items = []; temperature = ""; description = ""; time = ""
+		mainLine = ""
+		
+		for line in lines:
+			line = line.rstrip()
+			if line.find("<p>發布時間") > -1:
+				mainLine = line
+				break
+
+		lines = mainLine.split('</p><p>')
+		firstLine = lines[0].strip()
+		year = datetime.now().year
+		publishTime = datetime(year, int(firstLine[18:20]), int(firstLine[21:23]), int(firstLine[24:26]), int(firstLine[27:29])).__str__()
+
+		for line in lines[2:]:
+			q = '(\d+)/(\d+)\(.*\)(.*)<br />(.*)  (.*)'
+			r = re.findall(q, line)[0]
+			time = date(year, int(r[0]), int(r[1])).__str__()
+			description = r[4].replace('</p>', '').decode("utf-8")
+			temperature = r[3]
+			day_night = r[2]
+			item = {"date": time, "description": description, "temperature": temperature, "day": day_night}
+			items.append(item)
+		result = {"locationName":locationName, "id":name, "publishTime": publishTime, "items": items}
+		return result
+	def fetchWithID(self, location_id):
+		locationName = self.locationNameWithID(location_id)
+		if locationName is None:
+			return None
+		location = 'city_%(id)02d' % {'id': int(location_id)}
+		URLString = WeatherWeekURL % {"location": location}
+		return self.handleLines(URLString, locationName, location_id)
 
 class TestWeatherWeek(unittest.TestCase):
 	def setUp(self):
@@ -1087,7 +1142,7 @@ class TestWeatherGlobal(unittest.TestCase):
 
 
 def main():
-	print WeatherWeek().fetchWithID('Taipei')
+	print WeatherWeek2().fetchWithID(1)
 	# unittest.main()
 
 if __name__ == '__main__':

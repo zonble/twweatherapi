@@ -42,6 +42,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 app.pages = [
 	{'function_name':u'overview', 'title':u'關心天氣'},
 	{'function_name':u'forecast', 'title':u'48 小時天氣預報'},
+	{'function_name':u'week2', 'title':u'一週天氣(新版)'},
 	{'function_name':u'week', 'title':u'一週天氣'},
 	{'function_name':u'week_travel', 'title':u'一週旅遊'},
 	{'function_name':u'three_day_sea', 'title':u'三天海上預報'},
@@ -195,10 +196,6 @@ def getIndexPage(model, function_name, request, fetchItemsName='locations()'):
 		cache.set(cache_title_key, cachedTitle, timeout=DEFAULT_CACHE_TIMEOUT)
 	return render_template('index.html', app=app, text=Markup(cachedData), title=cachedTitle, side=Markup(sidebar()))
 
-# @app.route('/testevn', methods=['GET'])
-# def test():
-# 	return str(os.environ)
-
 @app.route('/testquery', methods=['GET'])
 def testQuery():
 	# devices = Device.query.all()
@@ -255,6 +252,10 @@ def handleRequest(model, function_name, request):
 @app.route('/forecast', methods=['GET'])
 def forecast():
 	return handleRequest(weather.WeatherForecast, 'forecast', request)
+
+@app.route('/week2', methods=['GET'])
+def week2():
+	return handleRequest(weather.WeatherWeek2, 'week2', request)
 
 @app.route('/week', methods=['GET'])
 def week():
