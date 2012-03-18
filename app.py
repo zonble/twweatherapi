@@ -125,7 +125,7 @@ def _output(cachedData, request):
 		pl = dict(result=cachedData)
 		output = plistlib.writePlistToString(pl)
 		response = make_response(output)
-		response.headers['Content-Type'] = 'text/plist; charset=utf-8'
+		response.headers['Content-Type'] = 'text/xml; charset=utf-8'
 		return response
 
 def getData(modelInstance, cache_key, request, fetchMethodName='fetchWithID', fetchParameter=None):
