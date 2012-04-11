@@ -415,6 +415,43 @@ WeatherWeekTravelLocations = [
 class WeatherWeekTravel(WeatherWeek):
 	def locations(self):
 		return WeatherWeekTravelLocations
+	def handleLines(self, URLString, locationName, name):
+		try:
+			url = urllib.urlopen(URLString, proxies={})
+		except:
+			return None
+		lines = url.readlines()
+		publishTime = ""
+		items = []
+		temperature = ""
+		description = ""
+		time = ""
+
+		mainLine = ""
+
+		for line in lines:
+			line = line.rstrip()
+			if line.find("<p>發布時間") > -1:
+				mainLine = line
+				break
+
+		lines = mainLine.split('</p><p>')
+		firstLine = lines[0].strip()
+		year = datetime.now().year
+		q = '.*?<br />(\d+)/(\d+) (\d+):(\d+)'
+		r = re.findall(q, line)[0]
+		publishTime = datetime(year, int(r[0]), int(r[1]), int(r[2]), int(r[3])).__str__()
+
+		for line in lines[2:]:
+			q = '(\d+)/(\d+)\(.*?\) (.*).*<br />(.*)'
+			r = re.findall(q, line)[0]
+			time = date(year, int(r[0]), int(r[1])).__str__()
+			description = r[2].replace("</p>", "").decode("utf-8")
+			temperature = r[3].replace("</p>", "")
+			item = {"date": time, "description": description, "temperature": temperature}
+			items.append(item)
+		result = {"locationName":locationName, "id":name, "publishTime": publishTime, "items": items}
+		return result
 	def fetchWithID(self, name):
 		locationName = self.locationNameWithID(name)
 		if locationName is None:
