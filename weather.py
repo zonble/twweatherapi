@@ -1,30 +1,29 @@
 #!/usr/bin/env python
 # encoding: utf-8
+
 """
 weather.py
 
-Copyright (c) 2009 Weizhong Yang (http://zonble.net)
+Copyright (c) 2009-2013 Weizhong Yang (http://zonble.net)
 
-Permission is hereby granted, free of charge, to any person
-obtaining a copy of this software and associated documentation
-files (the "Software"), to deal in the Software without
-restriction, including without limitation the rights to use,
-copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following
-conditions:
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
 
 The above copyright notice and this permission notice shall be
 included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-OTHER DEALINGS IN THE SOFTWARE.
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
 import sys
@@ -150,7 +149,7 @@ WeatherForecastLocations = [
 	{"location": u"雲林",  "id": 11, "weekLocation":"Center"},
 	{"location": u"嘉義",  "id": 12, "weekLocation":"Center"},
 	{"location": u"台南",  "id": 13, "weekLocation":"South"},
-	# {"location": u"高雄",  "id": 14, "weekLocation":"South"},
+	# {"location": u"高雄",	 "id": 14, "weekLocation":"South"},
 	{"location": u"屏東",  "id": 15, "weekLocation":"South"},
 	{"location": u"恆春",  "id": 16, "weekLocation":"South"},
 	{"location": u"宜蘭",  "id": 17, "weekLocation":"North-East"},
@@ -164,26 +163,26 @@ WeatherForecastLocations = [
 WeatherForecastLocations2 = [
 	{"location": u"台北市", "id": 1 , "weekLocation":"Taipei"},
 	{"location": u"高雄市", "id": 2 , "weekLocation":"South"},
-	{"location": u"基隆市",  "id": 3 , "weekLocation":"North-East"},
-	{"location": u"新北市",  "id": 4 , "weekLocation":"North"},
-	{"location": u"桃園縣",  "id": 5 , "weekLocation":"North"},
-	{"location": u"新竹市",  "id": 14, "weekLocation":"South"},
-	{"location": u"新竹縣",  "id": 6 , "weekLocation":"North"},
-	{"location": u"苗栗縣",  "id": 7 , "weekLocation":"North"},
-	{"location": u"台中市",  "id": 8 , "weekLocation":"Center"},
-	{"location": u"彰化縣",  "id": 9 , "weekLocation":"Center"},
-	{"location": u"南投縣",  "id": 10, "weekLocation":"Center"},
-	{"location": u"雲林縣",  "id": 11, "weekLocation":"Center"},
-	{"location": u"嘉義市",  "id": 16, "weekLocation":"South"},
-	{"location": u"嘉義縣",  "id": 12, "weekLocation":"Center"},
-	{"location": u"台南市",  "id": 13, "weekLocation":"South"},
-	{"location": u"屏東縣",  "id": 15, "weekLocation":"South"},
-	{"location": u"宜蘭縣",  "id": 17, "weekLocation":"North-East"},
-	{"location": u"花蓮縣",  "id": 18, "weekLocation":"South-East"},
-	{"location": u"台東縣",  "id": 19, "weekLocation":"South-East"},
-	{"location": u"澎湖縣",  "id": 20, "weekLocation":"Penghu"},
-	{"location": u"金門縣",  "id": 21, "weekLocation":"Kinmen"},
-	{"location": u"連江縣",  "id": 22, "weekLocation":"Matsu"}
+	{"location": u"基隆市",	 "id": 3 , "weekLocation":"North-East"},
+	{"location": u"新北市",	 "id": 4 , "weekLocation":"North"},
+	{"location": u"桃園縣",	 "id": 5 , "weekLocation":"North"},
+	{"location": u"新竹市",	 "id": 14, "weekLocation":"South"},
+	{"location": u"新竹縣",	 "id": 6 , "weekLocation":"North"},
+	{"location": u"苗栗縣",	 "id": 7 , "weekLocation":"North"},
+	{"location": u"台中市",	 "id": 8 , "weekLocation":"Center"},
+	{"location": u"彰化縣",	 "id": 9 , "weekLocation":"Center"},
+	{"location": u"南投縣",	 "id": 10, "weekLocation":"Center"},
+	{"location": u"雲林縣",	 "id": 11, "weekLocation":"Center"},
+	{"location": u"嘉義市",	 "id": 16, "weekLocation":"South"},
+	{"location": u"嘉義縣",	 "id": 12, "weekLocation":"Center"},
+	{"location": u"台南市",	 "id": 13, "weekLocation":"South"},
+	{"location": u"屏東縣",	 "id": 15, "weekLocation":"South"},
+	{"location": u"宜蘭縣",	 "id": 17, "weekLocation":"North-East"},
+	{"location": u"花蓮縣",	 "id": 18, "weekLocation":"South-East"},
+	{"location": u"台東縣",	 "id": 19, "weekLocation":"South-East"},
+	{"location": u"澎湖縣",	 "id": 20, "weekLocation":"Penghu"},
+	{"location": u"金門縣",	 "id": 21, "weekLocation":"Kinmen"},
+	{"location": u"連江縣",	 "id": 22, "weekLocation":"Matsu"}
 	]
 
 class WeatherForecast(Forecast):
@@ -210,10 +209,10 @@ class WeatherForecast(Forecast):
 		time = ""
 		beginTime = ""
 		endTime = ""
-		
+
 		isHandlingTime = False
 		isHandlingDescription = False
-		
+
 		for line in lines:
 			line = line.rstrip()
 			if line.startswith("今") or line.startswith("明"):
@@ -239,7 +238,7 @@ class WeatherForecast(Forecast):
 				end = datetime(year, int(line[12:14]), int(line[15:17]), int(line[18:20]), int(line[21:23]))
 				endTime = end.__str__()
 				time = beginTime + "/" + endTime
-				
+
 				isHandlingTime = False
 				isHandlingDescription = True
 			elif isHandlingDescription is True:
@@ -282,7 +281,7 @@ WeatherWeekLocations = [
 	{"location": u"金門",  "id": "Kinmen"},
 	{"location": u"馬祖",  "id": "Matsu"},
 	]
-	
+
 WeatherWeekMap = {
 	"Taipei":"city_01",
 	"North":"city_04",
@@ -310,9 +309,9 @@ class WeatherWeek(Forecast):
 		temperature = ""
 		description = ""
 		time = ""
-		
+
 		mainLine = ""
-		
+
 		for line in lines:
 			line = line.rstrip()
 			if line.find("<p>發布時間") > -1:
@@ -352,7 +351,7 @@ class WeatherWeek2(Forecast):
 		lines = url.readlines()
 		publishTime = ""; items = []; temperature = ""; description = ""; time = ""
 		mainLine = ""
-		
+
 		for line in lines:
 			line = line.rstrip()
 			if line.find("<p>發布時間") > -1:
@@ -472,13 +471,13 @@ Weather3DaySeaLocations = [
 	{"location": u"台灣北部海面",  "id": 6},
 	{"location": u"台灣海峽北部", "id": 7},
 	{"location": u"台灣海峽南部",  "id": 8},
-	{"location": u"台灣東北部海面",  "id": 9},
-	{"location": u"台灣東南部海面",  "id": 10},
+	{"location": u"台灣東北部海面",	 "id": 9},
+	{"location": u"台灣東南部海面",	 "id": 10},
 	{"location": u"巴士海峽", "id": 11},
 	{"location": u"廣東海面", "id": 12},
-	{"location": u"東沙島海面",  "id": 13},
+	{"location": u"東沙島海面",	 "id": 13},
 	{"location": u"中西沙島海面",  "id": 14},
-	{"location": u"南沙島海面",  "id": 15}
+	{"location": u"南沙島海面",	 "id": 15}
 	]
 
 class Weather3DaySea(Forecast):
@@ -512,7 +511,7 @@ class Weather3DaySea(Forecast):
 					line = line.replace("<br />", "")
 					parts = line.split("/")
 
-					if len(parts) >  1:
+					if len(parts) >	 1:
 						month = int(parts[0])
 						day = int(parts[1])
 						year = int(date.today().year)
@@ -600,7 +599,7 @@ class WeatherNearSea(Forecast):
 			url = urllib.urlopen(URLString, proxies={})
 		except:
 			return None
-		
+
 		lines = url.readlines()
 		publishTime = ""
 		validTime = ""
@@ -633,7 +632,7 @@ class WeatherNearSea(Forecast):
 			elif handlingData is True:
 				if line.find("</p>") > -1:
 					result = {"locationName": locationName, "id": id, "description": description,
-						"publishTime": publishTime, "validBeginTime": validBeginTime, 
+						"publishTime": publishTime, "validBeginTime": validBeginTime,
 						"validEndTime": validEndTime, "validTime": validTime,
 						"wind": wind, "windScale": windScale, "wave": wave,
 						"waveLevel": waveLevel
@@ -713,7 +712,7 @@ class WeatherTide(Forecast):
 			minute = int(shortTime[3:5])
 			longTime = datetime(theDate.year, theDate.month, theDate.day, hour, minute).__str__()
 			return {"longTime": longTime, "shortTime": shortTime, "height": height}
-		
+
 	def fetchWithID(self, id):
 		locationName = self.locationNameWithID(id)
 		if locationName is None:
@@ -784,7 +783,7 @@ WeatherImageURL = [
 	{"id": "rain", "URL":"http://www.cwb.gov.tw/V7/observe/rainfall/Data/hk.jpg"},
 	{"id": "rain_12", "URL":"http://www.cwb.gov.tw/V7/forecast/fcst/Data/QPF_ChFcstPrecip12.jpg"},
 	{"id": "rain_24", "URL":"http://www.cwb.gov.tw/V7/forecast/fcst/Data/QPF_ChFcstPrecip24.jpg"},
-	
+
 	{"id": "radar", "URL":"http://www.cwb.gov.tw/V7/observe/radar/Data/MOS_1024/MOS.jpg"},
 	{"id": "radar2", "URL":"http://www.cwb.gov.tw/V7/observe/radar/Data/MOS2_1024/MOS2.jpg"},
 
@@ -887,7 +886,7 @@ class WeatherOBS(Forecast):
 		windDirection = ""
 		windScale = ""
 		gustWindScale = ""
-		
+
 		for line in lines:
 			line = line.rstrip()
 			if isHandlingTime is True:
@@ -1039,13 +1038,13 @@ class WeatherGlobal(Forecast):
 		return WeatherGlobalLocations
 	def fetchWithID(self, id):
 		locationItem = None
-		for item in  self.locations():
+		for item in	 self.locations():
 			if item['id'] == id:
 				locationItem = item
 				break
 		if locationItem is None:
 			return
-		
+
 		if locationItem["areaID"] is "asia":
 			area = "AA"
 		elif locationItem["areaID"] is "america":
@@ -1054,7 +1053,7 @@ class WeatherGlobal(Forecast):
 			area = "EA"
 		elif locationItem["areaID"] is "china":
 			area = "CH"
-		
+
 		newid = id.capitalize()
 		if id == 'LOSANGELES':
 			newid = 'Los-angeles'
@@ -1080,13 +1079,13 @@ class WeatherGlobal(Forecast):
 		avgTemperature = ""
 		avgRain = ""
 		infoline = ""
-	
+
 		for line in lines:
 			line = line.strip()
 			if line.startswith('<li class="smallfield">'):
 				infoline = line
 				break
-	
+
 		infoline = infoline.strip()
 		parts = infoline.split('<br />')
 		l = 0
@@ -1122,9 +1121,9 @@ class WeatherGlobal(Forecast):
 					elif someParts[0].endswith('溫度'):
 						temperature = someParts[1].replace('℃', '').strip()
 				avgTemperature = '%d' % ((l + h) / 2)
-		result = {"locationName": locationName, "id": id, "area": area, "forecastDate": forecastDate, "validDate": validDate, "forecast": forecast,  "temperature": temperature, "avgTemperature": avgTemperature, "avgRain": avgRain}
+		result = {"locationName": locationName, "id": id, "area": area, "forecastDate": forecastDate, "validDate": validDate, "forecast": forecast,	 "temperature": temperature, "avgTemperature": avgTemperature, "avgRain": avgRain}
 		# for key in result.keys():
-		# 	print result[key]
+		#	print result[key]
 		return result
 
 
@@ -1184,4 +1183,3 @@ def main():
 
 if __name__ == '__main__':
 	main()
-

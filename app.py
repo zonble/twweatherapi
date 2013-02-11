@@ -2,29 +2,26 @@
 # encoding: utf-8
 
 """
+Copyright (c) 2009-2013 Weizhong Yang (http://zonble.net)
 
-Copyright (c) 2009-2010 Weizhong Yang (http://zonble.net)
-
-Permission is hereby granted, free of charge, to any person
-obtaining a copy of this software and associated documentation
-files (the "Software"), to deal in the Software without
-restriction, including without limitation the rights to use,
-copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following
-conditions:
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
 
 The above copyright notice and this permission notice shall be
 included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-OTHER DEALINGS IN THE SOFTWARE.
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
 import os
@@ -84,7 +81,7 @@ def add_record(request):
 	device_id = request.args.get('device_id', '')
 	if not len(str(device_id)):
 		return
-	
+
 	current_device = None
 	try:
 		current_device = Device.query.filter_by(device_id=device_id).first()
@@ -112,7 +109,10 @@ def add_record(request):
 	current_device.note = note if note else ""
 	current_device.access_date = datetime.now()
 
-	db_session.commit()
+	try:
+		db_session.commit()
+	except:
+		pass
 
 def _output(cachedData, request):
 	outputtype = request.args.get('output', '')
@@ -296,7 +296,7 @@ def image():
 		text = u'<table>'
 		text += u'<tr><th>代號</th><th colspan="2">圖片</th></tr>'
 		for item in weather.WeatherImageURL:
-			line = u'<tr>' 
+			line = u'<tr>'
 			line += '<td>' + item['id'] + '</td>'
 			line += '<td><a href="' + url_for('image', id=item['id']) + '">Cached Image</a></td>'
 			line += '<td><a href="' + item["URL"] + '">Original Image</a></td>'
