@@ -29,7 +29,7 @@ import weather
 import plistlib, json
 from flask import *
 from werkzeug.contrib.cache import SimpleCache
-from flaskext.sqlalchemy import SQLAlchemy
+from flask.ext.sqlalchemy import SQLAlchemy
 from sqlalchemy import *
 from datetime import datetime
 
